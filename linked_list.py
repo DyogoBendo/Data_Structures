@@ -323,9 +323,30 @@ class DoublyLinkedList(object):
         while trav is not None:
             sb = sb + str(trav.data)
             if trav.next is not None:
-                sb = sb + ', '
+                sb = sb + ' <-> '
 
             trav = trav.next
 
         sb = sb + ' ]'
         return str(sb)
+
+
+if __name__ == '__main__':
+    list_test = DoublyLinkedList()  # creating a linked list
+
+    node_one = Node("Dyogo", None, None)  # first node
+    list_test.addFirst(node_one) # adding node to the list
+
+    last_node = Node("Jimenez", None, None)  # last node
+    list_test.addLast(last_node)  # Adding node at the final of the list
+
+    middle_node = Node("Nikoly", None, None)  # creating middle node
+    list_test.addAt(1, middle_node)
+
+    print(list_test)
+
+    print(list_test.indexOf(last_node))  # show the index of the last node
+
+    list_test.removeFirst()
+    print(list_test)
+
