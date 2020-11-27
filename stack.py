@@ -47,16 +47,18 @@ if __name__ == '__main__':
     # size of the stack
     print(len(stack))
 
-    # using the class
+    # using the class Stack
 
     another_stack = Stack(10)
 
-    another_stack.push(5)
+    # pushing an element
 
+    another_stack.push(5)
     print(another_stack)
 
-    another_stack.pop()
+    # popping an element
 
+    another_stack.pop()
     print(another_stack)
 
 
