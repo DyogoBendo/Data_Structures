@@ -187,5 +187,12 @@ if __name__ == '__main__':
     amigos.add('Jimenez')
     amigos.add('Nikoly')
     amigos.add('Daniel')
+    amigos.add('Sgobero')
+
+    print(amigos)
+
+    amigos.remove('Sgobero')
+    amigos.remove('Dyogo')
+    amigos.remove_at(1)
 
     print(amigos)
