@@ -176,6 +176,7 @@ if __name__ == '__main__':
     teste.add(3)
 
     print(teste)
+    print(teste.is_min_heap(0))
 
     teste.poll()
     teste.poll()
@@ -196,3 +197,4 @@ if __name__ == '__main__':
     amigos.remove_at(1)
 
     print(amigos)
+    print(amigos.contains('Nikoly'))
