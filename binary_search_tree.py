@@ -1,17 +1,8 @@
 from collections import deque
-
-from array import array as arr
-from enum import Enum, auto
+import random
 
 
-class TreeTransversalOrder(Enum):
-    PRE_ORDER = auto()
-    IN_ORDER = auto()
-    POST_ORDER = auto()
-    LEVEL_ORDER = auto()
-
-
-class Node():
+class Node:
     """
     Internal node containing node references
     and the actual node data
@@ -22,7 +13,16 @@ class Node():
         self.right = right
 
 
-class BinarySearchTree():
+def find_min(node):
+    """
+    Helper method to find the leftmost node (which has the smallest value)
+    """
+    while node.left is not None:
+        node = node.left
+    return node
+
+
+class BinarySearchTree:
     """
     An implementation of an indexed binary heap priority queue
     """
@@ -109,24 +109,22 @@ class BinarySearchTree():
 
             if node.left is None:
 
-                rightChild = node.right
+                right_child = node.right
 
                 node.data = None
-                node = None
 
-                return rightChild
+                return right_child
 
             # This is the case with only a left subtree or
             # no subtree at all. In this situation just
             # swap the node we wish to remove with its left child
-            elif node.right == None:
+            elif node.right is None:
 
-                leftChild = node.left
+                left_child = node.left
 
                 node.data = None
-                node = None
 
-                return leftChild
+                return left_child
 
             # When removing a node from a binary tree with two links the
             # sucessor of the node being removed can either be the largest
@@ -137,7 +135,7 @@ class BinarySearchTree():
             else:
 
                 # Find the leftmost node in the right subtree
-                tpm = self.findMin(node.right)
+                tpm = find_min(node.right)
 
                 # Swap the data
                 node.data = tpm.data
@@ -170,14 +168,6 @@ class BinarySearchTree():
 
         return node
 
-    def findMin(self, node):
-        """
-        Helper method to find the leftmost node (which has the smallest value)
-        """
-        while node.left is not None:
-            node = node.right
-        return node
-
     def contains(self, elem):
         """
         return true if the element exists in the three
@@ -190,28 +180,24 @@ class BinarySearchTree():
         """
 
         # Base case: reached bottom, value not found
-        if node == None:
+        if node is None:
             return False
 
         cmp = elem < node.data
 
+        # We found the value we were looking for:
         if elem == node.data:
             return True
 
         # Dig into the left subtree because the value we're
         # looking for is smaller than the current value
-        elif cmp is True:
+        elif cmp:
             return self.__contains(node.left, elem)
 
         # Dig into the right subtree because the value we`re
         # looking for is smaller than the current value
-        elif cmp is False:
+        elif not cmp:
             return self.__contains(node.right, elem)
-
-        # We found the value we were looking for:
-        else:
-            return True
-
 
     def height(self):
         """
@@ -225,23 +211,23 @@ class BinarySearchTree():
         """
         if node is None:
             return 0
-        return max(self.__height(node.left), self.__height()) + 1
+        return max(self.__height(node.left), self.__height(node.right)) + 1
 
-    def tranverse(self, order):
+    def traverse(self, order):
         """
         This method returns an iterator for a given TreeTraversalOrder
         The ways in which you can traverse the tree are in four different ways:
         preorder, inorder, postorder and levelorder
         """
 
-        if order is TreeTransversalOrder.PRE_ORDER:
-            return self.preOrderTraversal()
-        if order is TreeTransversalOrder.IN_ORDER:
-            return self.inOrderTraversal()
-        if order is TreeTransversalOrder.POST_ORDER:
-            return self.postOrderTraversal()
-        if order is TreeTransversalOrder.LEVEL_ORDER:
-            return self.levelOrderTraversal()
+        if order == 'PRE_ORDER':
+            return self.pre_order_traversal()
+        if order == 'IN_ORDER':
+            return self.in_order_traversal()
+        if order == 'POST_ORDER':
+            return self.post_order_traversal()
+        if order == 'LEVEL_ORDER':
+            return self.level_order_traversal()
 
         return None
 
@@ -259,7 +245,6 @@ class BinarySearchTree():
         """
         To move to next element
         """
-        # ToDo: Concurrent Modification Excepetions are not working!
         if self.expectedNodeCount != self.nodeCount:
             raise Exception('ConcurrentModificationException')
 
@@ -274,19 +259,17 @@ class BinarySearchTree():
 
         return node.data
 
-    def preOrderTraversal(self):
+    def pre_order_traversal(self):
         """
         Returns as iterator to traverse the tree in pre order
         """
         if self.root is None:
             return None
 
-        expectedNodeCount = self.nodeCount
         stack = deque()
         stack.append(self.root)
 
-        trav = self.root
-        while True
+        while True:
             if self.root is None or len(stack) == 0:
                 break
 
@@ -297,15 +280,14 @@ class BinarySearchTree():
                 stack.append(node.left)
 
             yield node.data
+
         else:
             raise StopIteration
 
-
-    def inOrderTraversal(self):
+    def in_order_traversal(self):
         """
         Returns as iterator to traverse the tree in order
         """
-        expectedNodeCount = self.nodeCount
         stack = deque()
         stack.append(self.root)
         trav = self.root
@@ -329,14 +311,13 @@ class BinarySearchTree():
         else:
             raise StopIteration
 
-    def postOrderTraversal(self):
+    def post_order_traversal(self):
         """
         Return as iterator to traverse the tree in post order
         """
-        exptectedNodeCount = self.nodeCount
         stack1 = deque()
         stack1.append(self.root)
-        stack2 = deque
+        stack2 = deque()
 
         while len(stack1) != 0:
             node = stack1.pop()
@@ -351,17 +332,16 @@ class BinarySearchTree():
             if self.root is None or len(stack2) == 0:
                 break
 
-            node = stack2.pop
+            node = stack2.pop()
 
             yield node.data
         else:
             raise StopIteration
 
-    def levelOrderTraversal(self):
+    def level_order_traversal(self):
         """
         Returns as iterator to traverse the tree in level order
         """
-        expectedNodeCount = self.nodeCount
         queue = deque()
         queue.append(self.root)
 
@@ -378,3 +358,92 @@ class BinarySearchTree():
             yield node.data
         else:
             raise StopIteration
+
+    def display(self):
+        lines, *_ = self.display_aux(self.root)
+        for line in lines:
+            print(line)
+
+    def display_aux(self, node):
+        """Returns list of strings, width, height, and horizontal coordinate of the root."""
+        # No child
+        if node.right is None and node.left is None:
+            line = f'{node.data}'
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        # Only left child.
+        if node.right is None:
+            lines, n, p, x = self.display_aux(node.left)
+            s = f'{node.data}'
+            u = len(s)
+            first_line = (x + 1) * ' ' + (n - x - 1) * '_' + s
+            second_line = x * ' ' + '/' + (n - x - 1 + u) * ' '
+            shifted_lines = [line + u * ' ' for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
+
+        # Only right child.
+        if node.left is None:
+            lines, n, p, x = self.display_aux(node.right)
+            s = '%s' % node.data
+            u = len(s)
+            first_line = s + x * '_' + (n - x) * ' '
+            second_line = (u + x) * ' ' + '\\' + (n - x - 1) * ' '
+            shifted_lines = [u * ' ' + line for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
+
+        # Two children.
+        left, n, p, x = self.display_aux(node.left)
+        right, m, q, y = self.display_aux(node.right)
+        s = '%s' % node.data
+        u = len(s)
+        first_line = (x + 1) * ' ' + (n - x - 1) * '_' + s + y * '_' + (m - y) * ' '
+        second_line = x * ' ' + '/' + (n - x - 1 + u + y) * ' ' + '\\' + (m - y - 1) * ' '
+        if p < q:
+            left += [n * ' '] * (q - p)
+        elif q < p:
+            right += [m * ' '] * (p - q)
+        zipped_lines = zip(left, right)
+        lines = [first_line, second_line] + [a + u * ' ' + b for a, b in zipped_lines]
+        return lines, n + m + u, max(p, q) + 2, n + u // 2
+
+
+if __name__ == '__main__':
+    arvore_binaria = BinarySearchTree()
+
+    lista_alunos = ['Nikoly', 'Jimenez', 'Daniel', 'Dyogo', 'Sarah', 'Aluisio', 'Annalucia', 'Augusto',
+                    'Becker', 'Brambilla', 'Caio', 'Ditz', 'Erick', 'Fabio', 'Felipe', 'Gaby', 'Heck',
+                    'Joao', 'Kelvin', 'Lara', 'Laurentino', 'Luiz', 'Lukas', 'Matheus', 'Nicolas',
+                    'Nicolly', 'Obregon', 'Pedro da Mata', 'Pedro Henrique', 'Rubens', 'Andressa S', 'Andressa V',
+                    'Sgobero', 'Vinicius', 'Xavier', 'Thomas', 'Pachola']
+
+    while lista_alunos:
+        escolha_aleatoria = random.choice(lista_alunos)
+        lista_alunos.remove(escolha_aleatoria)
+        arvore_binaria.add(escolha_aleatoria)
+
+    print(arvore_binaria.contains('Dyogo'))
+    print(arvore_binaria.contains('Daniel'))
+    print(arvore_binaria.height())
+
+    print(arvore_binaria.remove('Jimenez'))
+
+    arvore_binaria.display()
+
+    print('IN ORDER \n')
+    for i in arvore_binaria.traverse('IN_ORDER'):
+        print(i)
+
+    print('\n POST ORDER \n')
+    for i in arvore_binaria.traverse('POST_ORDER'):
+        print(i)
+
+    print('\n LEVEL ORDER \n')
+    for i in arvore_binaria.traverse('LEVEL_ORDER'):
+        print(i)
+
+    print('\n PRE ORDER \n')
+    for i in arvore_binaria.traverse('PRE_ORDER'):
+        print(i)
